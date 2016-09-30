@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import bolt.CountBolt;
+
 public class MyTopology {
 
     public static void main(String[] args) throws Exception {
@@ -32,11 +34,11 @@ public class MyTopology {
 
         builder.setSpout("spout", kafkaSpout, 1);
         builder.setBolt("bolt", wordCount);
+        builder.setBolt("countbolt", new CountBolt());
 
 
         LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("wordCounter", new Config(), builder.createTopology());
-
+        cluster.submitTopology("newTopology", new Config(), builder.createTopology());
 
     }
 

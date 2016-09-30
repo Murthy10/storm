@@ -1,3 +1,5 @@
-TridentKafkaTopology.class
 MyTopology.class
 MyTopology$WordCount.class
+KafkaTopology.class
+TridentKafkaTopology.class
+bolt/CountBolt.class

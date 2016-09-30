@@ -60,7 +60,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>MyTopology</mainClass>
+                            <mainClass>KafkaTopology</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
