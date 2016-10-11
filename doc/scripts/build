@@ -1,0 +1,14 @@
+#!/bin/sh
+BASEDIR=$(dirname $0)
+cd $BASEDIR
+cd ..
+
+# Build the dissertation.
+latex db_seminar
+bibtex db_seminar
+latex db_seminar
+latex db_seminar
+
+# Hide the log.
+mv "db_seminar.log" ".logged"
+
