@@ -1,44 +1,13 @@
-% -------------------------------------------------------------------
-%  @LaTeX-class-file{
-%     filename        = "Dissertate.cls",
-%     version         = "2.0",
-%     date            = "25 March 2014",
-%     codetable       = "ISO/ASCII",
-%     keywords        = "LaTeX, Dissertate",
-%     supported       = "Send email to suchow@post.harvard.edu.",
-%     docstring       = "Class for a dissertation."
-% --------------------------------------------------------------------
-
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{Dissertate}[2014/03/25 v2.0 Dissertate Class]
 \LoadClass[12pt, oneside, letterpaper]{book}
 
-%
-% Options
-%
 \RequirePackage{etoolbox}
 
-% Line spacing: dsingle/ddouble
-%   Whether to use single- or doublespacing.
-\newtoggle{DissertateSingleSpace}
-\togglefalse{DissertateSingleSpace}
-\DeclareOption{dsingle}{
-    \toggletrue{DissertateSingleSpace}
-    \ClassWarning{Dissertate}{Single-spaced mode on.}
-}
-\DeclareOption{ddouble}{\togglefalse{DissertateSingleSpace}}
 
-\ProcessOptions\relax
+\newcommand{\dnormalspacing}{1.2}
+\newcommand{\dcompressedspacing}{1.0}
 
-% Line Spacing
-%   Define two line spacings: one for the body, and one that is more compressed.
-\iftoggle{DissertateSingleSpace}{
-    \newcommand{\dnormalspacing}{1.2}
-    \newcommand{\dcompressedspacing}{1.0}
-}{
-    \newcommand{\dnormalspacing}{2.0}
-    \newcommand{\dcompressedspacing}{1.2}
-}
 
 % Block quote with compressed spacing
 \let\oldquote\quote
@@ -149,30 +118,14 @@
      \endlist}
 
 % Some definitions.
+\def\title#1{\gdef\@title{#1}}
+\def\author#1{\gdef\@author{#1}}
 \def\advisor#1{\gdef\@advisor{#1}}
-\def\degreeyear#1{\gdef\@degreeyear{#1}}
-\def\degreemonth#1{\gdef\@degreemonth{#1}}
 \def\degreeterm#1{\gdef\@degreeterm{#1}}
-\def\degree#1{\gdef\@degree{#1}}
-\def\department#1{\gdef\@department{#1}}
-\def\field#1{\gdef\@field{#1}}
 \def\university#1{\gdef\@university{#1}}
 \def\universitycity#1{\gdef\@universitycity{#1}}
 \def\universitystate#1{\gdef\@universitystate{#1}}
-\def\programname#1{\gdef\@programname{#1}}
-\def\pdOneName#1{\gdef\@pdOneName{#1}}
-\def\pdOneSchool#1{\gdef\@pdOneSchool{#1}}
-\def\pdOneYear#1{\gdef\@pdOneYear{#1}}
-\def\pdTwoName#1{\gdef\@pdTwoName{#1}}
-\def\pdTwoSchool#1{\gdef\@pdTwoSchool{#1}}
-\def\pdTwoYear#1{\gdef\@pdTwoYear{#1}}
-% School name and location
-\university{University of Applied Science, HSR}
-\universitycity{Rapperswil}
-\universitystate{St.Gallen Switzerland}
 
-% School color found from university's graphic identity site:
-% http://brand.berkeley.edu/colors/
 
 \definecolor{SchoolColor}{HTML}{003262} %berkeley blue
 %\definecolor{chaptergrey}{HTML}{003262} % chapter numbers
@@ -191,16 +144,12 @@
     urlcolor=SchoolColor,
 }
 
-% Formatting guidelines found in:
-% http://www.gsas.harvard.edu/publications/form_of_the_phd_dissertation.php
 \renewcommand{\frontmatter}{
     \input{frontmatter/personalize}
     \maketitle
     \copyrightpage
     \abstractpage
-    \dedicationpage
     \tableofcontents
-    \acknowledgments
     % \listoffigures % optional
     \setcounter{page}{1}
     \pagenumbering{arabic}
@@ -211,51 +160,26 @@
     \vspace*{\fill}
     \vspace{10pt}
     \begin{center}
-    \Huge \textcolor{SchoolColor}{\thetitle} \normalsize \\
+    \Huge \textcolor{SchoolColor}{\@title} \normalsize \\
     \vspace{100pt}
     By\\
-    \theauthor\\
+    \@author\\
     \vspace{12pt}
     \@university\\
     \vspace{50pt}
     \vspace{20pt}
     \vspace{50pt}
-    \@degreeterm\ \@degreeyear}
+    \@degreeterm
     \end{center} \vspace*{\fill}
 }
 
 
-%\renewcommand{\maketitle}{
-%    \thispagestyle{empty}
-%    \vspace*{\fill}
-%    \vspace{10pt}
-%    \begin{center}
-%    \Huge \textcolor{SchoolColor}{\thetitle} \normalsize \\
-%    \vspace{100pt}
-%    By\\
-%    \theauthor\\
-%    \vspace{12pt}
-%    \textsc{A Dissertation submitted in partial satisfaction of the\\
-%    requirements for the degree of \\ \@degree\\
-%    in\\ \@department\\ in the\\  Graduate Division\\ of the\\
-%    \@university\\
-%    \vspace{50pt}
-%    Committee in charge:\\
-%    \vspace{20pt}
-%    Professor \@advisor, Chair\\
-%    Professor \@committeeInternalOne\\
-%    Professor \@committeeInternalTwo\\
-%    Professor \@committeeExternal\\
-%    \vspace{50pt}
-%    \@degreeterm\ \@degreeyear}
-%    \end{center} \vspace*{\fill}
-%}
 
 \newcommand{\copyrightpage}{
     \newpage
     \thispagestyle{empty}
     \vspace*{\fill}
-    \scshape \noindent \small \copyright \small 2015\hspace{3pt}-- \theauthor \\
+    \scshape \noindent \small \copyright \small 2015\hspace{3pt}-- \author
     \noindent all rights reserved.
     \vspace*{\fill}
     \newpage
@@ -281,33 +205,3 @@
     \newpage \lhead{} \rhead{}
     \cfoot{\thepage}
 }
-
-\newcommand{\acknowledgments}{
-    \chapter*{Acknowledgments}
-    \noindent
-    \input{frontmatter/thanks}
-    \vspace*{\fill} \newpage
-}
-
-\newcommand{\dedicationpage}{
-    \setcounter{page}{1}
-    \pagenumbering{roman}
-    \newpage \thispagestyle{fancy} \vspace*{\fill}
-    \scshape \noindent \input{frontmatter/dedication}
-    \vspace*{\fill} \newpage \rm
-}
-
-
-\renewcommand{\backmatter}{
-    \input{endmatter/personalize}
-    \clearpage
-    \bibliography{references}
-    \addcontentsline{toc}{chapter}{References}
-    \bibliographystyle{apalike2}
-    \begin{appendices}
-        \include{chapters/appendixA}
-    \end{appendices}
-    \include{endmatter/colophon}
-}
-
-
