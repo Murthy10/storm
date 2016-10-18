@@ -1,6 +1,7 @@
 package bolt;
 
-import org.apache.storm.shade.org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
+
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IBasicBolt;
@@ -15,7 +16,7 @@ public class JsonPrinterBolt implements IBasicBolt {
     }
 
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
-        JSONObject json = (JSONObject) tuple.getValue(0);
+        JsonObject json = (JsonObject) tuple.getValue(0);
         System.out.println(json.toString());
     }
 

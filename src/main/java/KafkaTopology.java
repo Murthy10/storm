@@ -1,11 +1,12 @@
 import java.util.UUID;
 
+import bolt.UserCountBolt;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.kafka.*;
-import org.apache.storm.shade.org.json.simple.JSONObject;
 import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.topology.TopologyBuilder;
+import com.google.gson.JsonObject;
 
 import bolt.JsonPrinterBolt;
 import bolt.StringToJsonBolt;
@@ -26,10 +27,11 @@ public class KafkaTopology {
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("kafkaSpout", kafkaSpout, 1);
         builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
-        builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
+        //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
+        builder.setBolt("printer", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
 
         Config config = new Config();
-        config.registerSerialization(JSONObject.class);
+        config.registerSerialization(JsonObject.class);
         //config.setDebug(true);
         //config.setNumWorkers(3);
         //config.setMaxTaskParallelism(3);

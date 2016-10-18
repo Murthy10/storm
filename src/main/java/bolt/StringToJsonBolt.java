@@ -1,8 +1,9 @@
 package bolt;
 
-import org.apache.storm.shade.org.json.simple.JSONObject;
-import org.apache.storm.shade.org.json.simple.parser.JSONParser;
-import org.apache.storm.shade.org.json.simple.parser.ParseException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonParseException;
+
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IBasicBolt;
@@ -20,11 +21,11 @@ public class StringToJsonBolt implements IBasicBolt {
 
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         String diff = tuple.getString(0);
-        JSONParser jsonParser = new JSONParser();
+        JsonParser jsonParser = new JsonParser();
         try {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(diff);
+            JsonObject jsonObject = (JsonObject) jsonParser.parse(diff);
             basicOutputCollector.emit(new Values(jsonObject));
-        } catch (ParseException e) {
+        } catch (JsonParseException e) {
             e.printStackTrace();
         }
     }
