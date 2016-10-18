@@ -5,21 +5,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
 import com.google.gson.JsonPrimitive;
+import comparator.IntegerValueComparator;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserCountBolt implements IRichBolt {
 
-    private Map<String, Integer> counts = new TreeMap<>();
+    private Map<String, Integer> counts = new HashMap<>();
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -59,6 +57,7 @@ public class UserCountBolt implements IRichBolt {
         counts.put(text, count);
     }
 
+
     private void printKeys(JsonObject jsonObject) {
         List<String> keys = jsonObject.entrySet()
                 .stream()
@@ -70,7 +69,10 @@ public class UserCountBolt implements IRichBolt {
 
     @Override
     public void cleanup() {
-        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
+        Collections.sort(list, new IntegerValueComparator());
+
+        for (Map.Entry<String, Integer> entry : list) {
             String key = entry.getKey();
             Integer value = entry.getValue();
             System.out.println(key + ": " + value.toString());
