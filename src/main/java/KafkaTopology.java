@@ -1,5 +1,6 @@
 import java.util.UUID;
 
+import bolt.ObjectsCountBolt;
 import bolt.UserCountBolt;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -28,7 +29,8 @@ public class KafkaTopology {
         builder.setSpout("kafkaSpout", kafkaSpout, 1);
         builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
         //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
-        builder.setBolt("printer", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
+        //builder.setBolt("user", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
+        builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
 
         Config config = new Config();
         config.registerSerialization(JsonObject.class);

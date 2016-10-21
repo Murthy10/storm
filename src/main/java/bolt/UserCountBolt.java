@@ -70,7 +70,7 @@ public class UserCountBolt implements IRichBolt {
     @Override
     public void cleanup() {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
-        Collections.sort(list, new IntegerValueComparator());
+        Collections.sort(list, new IntegerValueComparator<>());
 
         for (Map.Entry<String, Integer> entry : list) {
             String key = entry.getKey();
