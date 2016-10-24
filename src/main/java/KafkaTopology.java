@@ -1,7 +1,6 @@
 import java.util.UUID;
 
-import bolt.ObjectsCountBolt;
-import bolt.UserCountBolt;
+import bolt.*;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.kafka.*;
@@ -9,17 +8,16 @@ import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.topology.TopologyBuilder;
 import com.google.gson.JsonObject;
 
-import bolt.JsonPrinterBolt;
-import bolt.StringToJsonBolt;
-
 public class KafkaTopology {
 
     public static void main(String[] args) throws Exception {
         String brokerConnection = "localhost:2181";
         BrokerHosts hosts = new ZkHosts(brokerConnection);
 
-        String topicName = "osm";
-        SpoutConfig kafkaConf = new SpoutConfig(hosts, topicName, "/" + topicName, UUID.randomUUID().toString());
+        String topicNameOsm = "osm";
+        String topicNameBenchmark = "benchmark";
+        //SpoutConfig kafkaConf = new SpoutConfig(hosts, topicNameOsm, "/" + topicNameOsm, UUID.randomUUID().toString());
+        SpoutConfig kafkaConf = new SpoutConfig(hosts, topicNameBenchmark, "/" + topicNameOsm, UUID.randomUUID().toString());
 
         kafkaConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 
@@ -27,10 +25,13 @@ public class KafkaTopology {
 
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("kafkaSpout", kafkaSpout, 1);
-        builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
+
+        builder.setBolt("benchmarkBolt", new BenchmarkBolt()).shuffleGrouping("kafkaSpout");
+
+        //builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
         //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
         //builder.setBolt("user", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
-        builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
+        //builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
 
         Config config = new Config();
         config.registerSerialization(JsonObject.class);
