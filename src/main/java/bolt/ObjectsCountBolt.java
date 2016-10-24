@@ -99,6 +99,8 @@ public class ObjectsCountBolt implements IRichBolt {
     private void printMostRelevanted(List<Map.Entry<String, Integer>> list, List<String> relevant, String text) {
         System.out.println();
         System.out.println(text);
+        System.out.println();
+
         for (Map.Entry<String, Integer> entry : list) {
             String key = entry.getKey();
             Integer value = entry.getValue();
