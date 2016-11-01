@@ -133,8 +133,8 @@
 % \definecolor{SchoolColor}{rgb}{0,0.19608,0.3843} %berkeley blue
 %\definecolor{chaptergrey}{rgb}{0,0.19608,0.3843} % chapter numbers
 
-% \definecolor{SchoolColor}{HTML}{FDB515} %berkeley gold
-\definecolor{chaptergrey}{HTML}{FDB515} % chapter numbers
+% \definecolor{SchoolColor}{HTML}{0C77E8} %berkeley gold
+\definecolor{chaptergrey}{HTML}{0C77E8} % chapter numbers
 
 \hypersetup{
     colorlinks,
