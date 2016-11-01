@@ -33,6 +33,9 @@
 % Text layout.
 \RequirePackage[width=5.75in, letterpaper]{geometry}
 \usepackage{ragged2e}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings}
 \RaggedRight
 \RequirePackage{graphicx}
 \usepackage{fixltx2e}
