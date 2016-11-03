@@ -55,7 +55,12 @@ fine granular desicions about which bolt has to handle which tuple.
 \newpage
 
 \section{Spout}
-
+The entry point of each topology are the so called spouts. The spouts are responsible for their reliability,
+thus you have to take care to implement them in a fault-tolerant way. This means that a spout must have the
+ability to deal with unprocessable messages from the stream.\\
+To handle the reliability at the spout you can add an ID to every message. If a message is correctly processed  by
+all the target bolts the \textit{ack} method of the spout is called. But if there were troubles or the timeout is
+reached the \textit{fail} method will be triggered.
 
 \newpage
 
