@@ -32,12 +32,25 @@ To organize this tuples there are topologies.
 
 \subsection{Grouping}
 The Topology defines the grouping, this means how streams are consumed by the bolts and how they consume them.
-There are there are four kinds of grouping \textit{Shuffle Grouping}, \textit{Fields Grouping},
+There are four kinds of grouping \textit{Shuffle Grouping}, \textit{Fields Grouping},
 \textit{All Grouping} and \textit{Custom Grouping}.
 
 \subsubsection{Shuffle Grouping}
 Shuffle Grouping takes a single entry from the source and sends each tuple to a randomly choosen bolt,
 which is listening to this kind of tuples. It also garanties that each consumer get's the same number of tuples.
+
+\subsubsection{Fields Grouping}
+With Fields Grouping it is possible to send toples to spezified bolts based on the fields of the tuple.
+It takes care that the same combination of fields is always sent to the same bolt.
+
+\subsubsection{All Grouping}
+All Grouping sends every tuple to all the bolts. This is helpful for tasks like signals or
+use different filters for alerting systems.
+
+\subsubsection{Custom Grouping}
+It is possible to build your on grouping based on the stream. This is very helpful if you have to make
+fine granular desicions about which bolt has to handle which tuple.
+
 
 \newpage
 
