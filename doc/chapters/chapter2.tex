@@ -23,6 +23,22 @@ They can be chained or parallelised in a way that fits best for your current pro
 \includegraphics[width=100pt]{images/storm.png}
 \caption[Storm]{Storm}
 \end{figure}
+
+\newpage
+
+\section{Topology}
+In generell Storm passes tuples between the different components.
+To organize this tuples there are topologies.
+
+\subsection{Grouping}
+The Topology defines the grouping, this means how streams are consumed by the bolts and how they consume them.
+There are there are four kinds of grouping \textit{Shuffle Grouping}, \textit{Fields Grouping},
+\textit{All Grouping} and \textit{Custom Grouping}.
+
+\subsubsection{Shuffle Grouping}
+Shuffle Grouping takes a single entry from the source and sends each tuple to a randomly choosen bolt,
+which is listening to this kind of tuples. It also garanties that each consumer get's the same number of tuples.
+
 \newpage
 
 \section{Spout}
@@ -32,6 +48,3 @@ They can be chained or parallelised in a way that fits best for your current pro
 
 \section{Bolt}
 
-\newpage
-
-\section{Topology}
