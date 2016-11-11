@@ -1,3 +1,4 @@
+import java.util.Properties;
 import java.util.UUID;
 
 import bolt.*;
@@ -16,7 +17,8 @@ public class KafkaTopology {
 
     public static void main(String[] args) throws Exception {
         //String brokerConnection = "localhost:2181";
-        String brokerConnection = "172.17.0.2:2181";
+        String host = "172.17.0.2";
+        String brokerConnection = host + ":2181";
         BrokerHosts hosts = new ZkHosts(brokerConnection);
 
         String topicNameOsm = "osm";
@@ -36,13 +38,21 @@ public class KafkaTopology {
 
         builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
         //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
-        builder.setBolt("user", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
+        builder.setBolt("userCountBolt", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
         //builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
 
-        KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(new DefaultTopicSelector("ObjectResults")).withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
-        builder.setBolt("toKafka", kafkaBolt).shuffleGrouping("user");
+        KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(new DefaultTopicSelector("results")).withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
+        builder.setBolt("kafkaBolt", kafkaBolt).shuffleGrouping("userCountBolt");
 
         Config config = new Config();
+
+        //set producer properties.
+        Properties props = new Properties();
+        props.put("metadata.broker.list", host+ ":9092");
+        props.put("request.required.acks", "1");
+        props.put("serializer.class", "kafka.serializer.StringEncoder");
+        config.put("kafka.broker.properties", props);
+
         config.registerSerialization(JsonObject.class);
         config.registerSerialization(JsonArray.class);
         //config.setDebug(true);
