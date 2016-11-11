@@ -1,31 +1,28 @@
 package bolt;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
+import com.google.gson.*;
 
-import com.google.gson.JsonPrimitive;
 import comparator.IntegerValueComparator;
-import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
-import org.apache.storm.topology.IRichBolt;
+import org.apache.storm.topology.BasicOutputCollector;
+import org.apache.storm.topology.IBasicBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserCountBolt implements IRichBolt {
+public class UserCountBolt implements IBasicBolt {
 
     private Map<String, Integer> counts = new HashMap<>();
 
     @Override
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map map, TopologyContext topologyContext) {
 
     }
 
-    @Override
-    public void execute(Tuple tuple) {
+    public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         JsonObject json = (JsonObject) tuple.getValue(0);
         try {
             if (json.has("osm")) {
@@ -42,6 +39,18 @@ public class UserCountBolt implements IRichBolt {
                     }
                 }
             }
+            JsonParser jsonParser = new JsonParser();
+            List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
+            Collections.sort(list, new IntegerValueComparator<>());
+
+            JsonArray results = new JsonArray();
+            for (Map.Entry<String, Integer> entry : getResultList()) {
+                String key = entry.getKey();
+                Integer value = entry.getValue();
+                JsonElement result = (JsonElement) jsonParser.parse("{\""+key+"\":"+value.toString()+"}");
+                results.add(result);
+            }
+            basicOutputCollector.emit(new Values(results));
         } catch (Exception e) {
             System.out.println("Something went wrong!");
             System.out.println(e);
@@ -67,12 +76,15 @@ public class UserCountBolt implements IRichBolt {
 
     }
 
-    @Override
-    public void cleanup() {
+    private List<Map.Entry<String, Integer>> getResultList(){
         List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
         Collections.sort(list, new IntegerValueComparator<>());
+        return list;
+    }
 
-        for (Map.Entry<String, Integer> entry : list) {
+    @Override
+    public void cleanup() {
+        for (Map.Entry<String, Integer> entry : getResultList()) {
             String key = entry.getKey();
             Integer value = entry.getValue();
             System.out.println(key + ": " + value.toString());

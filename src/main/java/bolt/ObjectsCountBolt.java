@@ -5,27 +5,26 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import comparator.IntegerValueComparator;
-import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
-import org.apache.storm.topology.IRichBolt;
+import org.apache.storm.topology.BasicOutputCollector;
+import org.apache.storm.topology.IBasicBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
 import java.util.*;
 
-public class ObjectsCountBolt implements IRichBolt {
+public class ObjectsCountBolt implements IBasicBolt {
     private Map<String, Integer> counts = new HashMap<>();
     private List<String> mostRelevantNodes = Arrays.asList("amenity=bench", "amenity=drinking_water", "amenity=parking", "amenity=restaurant", "highway=crossing", "information=guidepost", "natural=peak", "natural=tree", "tourism=information", "tourism=picnic_site");
     private List<String> mostRelevantWays = Arrays.asList("building=house", "building=residential", "building=yes", "highway=footway", "highway=path", "highway=residential", "highway=service", "highway=track", "landuse=forest", "waterway=stream");
 
-
     @Override
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map map, TopologyContext topologyContext) {
 
     }
 
-    @Override
-    public void execute(Tuple tuple) {
+    public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         JsonObject json = (JsonObject) tuple.getValue(0);
         try {
             if (json.has("osm")) {
