@@ -7,11 +7,11 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IBasicBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class UserCountBolt implements IBasicBolt {
 
@@ -39,17 +39,16 @@ public class UserCountBolt implements IBasicBolt {
                     }
                 }
             }
-            JsonParser jsonParser = new JsonParser();
             List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
             Collections.sort(list, new IntegerValueComparator<>());
-
-            JsonArray results = new JsonArray();
+            String results = "[";
             for (Map.Entry<String, Integer> entry : getResultList()) {
                 String key = entry.getKey();
                 Integer value = entry.getValue();
-                JsonElement result = (JsonElement) jsonParser.parse("{\""+key+"\":"+value.toString()+"}");
-                results.add(result);
+                results += "{\"name\":\"" + key + "\" \"count\":" + value.toString() + "},";
             }
+            results = results.substring(0, results.length() - 1);
+            results += "]";
             basicOutputCollector.emit(new Values(results));
         } catch (Exception e) {
             System.out.println("Something went wrong!");
@@ -67,16 +66,7 @@ public class UserCountBolt implements IBasicBolt {
     }
 
 
-    private void printKeys(JsonObject jsonObject) {
-        List<String> keys = jsonObject.entrySet()
-                .stream()
-                .map(i -> i.getKey())
-                .collect(Collectors.toCollection(ArrayList::new));
-        keys.forEach(System.out::println);
-
-    }
-
-    private List<Map.Entry<String, Integer>> getResultList(){
+    private List<Map.Entry<String, Integer>> getResultList() {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
         Collections.sort(list, new IntegerValueComparator<>());
         return list;
@@ -93,7 +83,7 @@ public class UserCountBolt implements IBasicBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        outputFieldsDeclarer.declare(new Fields("message"));
     }
 
     @Override

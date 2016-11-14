@@ -1,3 +1,4 @@
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -30,9 +31,8 @@ public class KafkaTopology {
         kafkaConf.fetchSizeBytes = 100000000;
 
         KafkaSpout kafkaSpout = new KafkaSpout(kafkaConf);
-
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("kafkaSpout", kafkaSpout, 1);
+        builder.setSpout("kafkaSpout", kafkaSpout);
 
         //builder.setBolt("benchmarkBolt", new BenchmarkBolt()).shuffleGrouping("kafkaSpout");
 
@@ -41,17 +41,14 @@ public class KafkaTopology {
         builder.setBolt("userCountBolt", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
         //builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
 
-        KafkaBolt kafkaBolt = new KafkaBolt().withTopicSelector(new DefaultTopicSelector("results")).withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
+        KafkaBolt kafkaBolt = new KafkaBolt();
+        kafkaBolt.withProducerProperties(getProperties(host));
+        kafkaBolt.withTopicSelector(new DefaultTopicSelector("results"));
+        kafkaBolt.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
         builder.setBolt("kafkaBolt", kafkaBolt).shuffleGrouping("userCountBolt");
 
         Config config = new Config();
 
-        //set producer properties.
-        Properties props = new Properties();
-        props.put("metadata.broker.list", host+ ":9092");
-        props.put("request.required.acks", "1");
-        props.put("serializer.class", "kafka.serializer.StringEncoder");
-        config.put("kafka.broker.properties", props);
 
         config.registerSerialization(JsonObject.class);
         config.registerSerialization(JsonArray.class);
@@ -64,6 +61,16 @@ public class KafkaTopology {
         Thread.sleep(30000);
         cluster.shutdown();
 
+    }
+
+    private static Properties getProperties(String host) {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", host + ":9092");
+        props.put("metadata.broker.list", host + ":9092");
+        props.put("request.required.acks", "1");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        return props;
     }
 
 
