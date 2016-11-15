@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import bolt.*;
 import com.google.gson.JsonArray;
+import helper.BoltHelper;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.kafka.*;
@@ -38,14 +39,21 @@ public class KafkaTopology {
 
         builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
         //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
-        builder.setBolt("userCountBolt", new UserCountBolt()).shuffleGrouping("stringToJsonBolt");
-        //builder.setBolt("objects", new ObjectsCountBolt()).shuffleGrouping("stringToJsonBolt");
+        builder.setBolt("userCountBolt", new UserCountBolt()).allGrouping("stringToJsonBolt");
+        builder.setBolt("objectCountBolt", new ObjectsCountBolt()).allGrouping("stringToJsonBolt");
 
-        KafkaBolt kafkaBolt = new KafkaBolt();
-        kafkaBolt.withProducerProperties(getProperties(host));
-        kafkaBolt.withTopicSelector(new DefaultTopicSelector("results"));
-        kafkaBolt.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
-        builder.setBolt("kafkaBolt", kafkaBolt).shuffleGrouping("userCountBolt");
+        KafkaBolt kafkaBoltUserCount = new KafkaBolt();
+        kafkaBoltUserCount.withProducerProperties(getProperties(host));
+        kafkaBoltUserCount.withTopicSelector(new DefaultTopicSelector("UserCount"));
+        kafkaBoltUserCount.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
+        builder.setBolt("kafkaBoltUserCount", kafkaBoltUserCount).shuffleGrouping("userCountBolt");
+
+        KafkaBolt kafkaBoltObjectCount = new KafkaBolt();
+        kafkaBoltObjectCount.withProducerProperties(getProperties(host));
+        kafkaBoltObjectCount.withTopicSelector(new DefaultTopicSelector("ObjectCount"));
+        kafkaBoltObjectCount.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper());
+        builder.setBolt("kafkaBoltObjectCount", kafkaBoltObjectCount).shuffleGrouping("objectCountBolt");
+
 
         Config config = new Config();
 
@@ -58,7 +66,7 @@ public class KafkaTopology {
         LocalCluster cluster = new LocalCluster();
 
         cluster.submitTopology("kafka", config, builder.createTopology());
-        Thread.sleep(30000);
+        Thread.sleep(30 * 60 * 1000);
         cluster.shutdown();
 
     }

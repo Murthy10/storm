@@ -5,17 +5,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import comparator.IntegerValueComparator;
+import helper.BoltHelper;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IBasicBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
 import java.util.*;
 
 public class ObjectsCountBolt implements IBasicBolt {
-    private Map<String, Integer> counts = new HashMap<>();
+    private BoltHelper boltHelper = new BoltHelper();
     private List<String> mostRelevantNodes = Arrays.asList("amenity=bench", "amenity=drinking_water", "amenity=parking", "amenity=restaurant", "highway=crossing", "information=guidepost", "natural=peak", "natural=tree", "tourism=information", "tourism=picnic_site");
     private List<String> mostRelevantWays = Arrays.asList("building=house", "building=residential", "building=yes", "highway=footway", "highway=path", "highway=residential", "highway=service", "highway=track", "landuse=forest", "waterway=stream");
 
@@ -42,14 +44,12 @@ public class ObjectsCountBolt implements IBasicBolt {
                                 for (JsonElement tagElement : tags) {
                                     if (tags.isJsonObject()) {
                                         JsonObject tag = tagElement.getAsJsonObject();
-                                        countByTag(tag);
+                                        countByTag(tag, basicOutputCollector);
                                     }
                                 }
                             } else {
                                 if (jsonTag.isJsonObject()) {
-                                    countByTag(jsonTag.getAsJsonObject());
-                                } else {
-                                    System.out.print(jsonTag.toString());
+                                    countByTag(jsonTag.getAsJsonObject(), basicOutputCollector);
                                 }
                             }
 
@@ -63,36 +63,24 @@ public class ObjectsCountBolt implements IBasicBolt {
         }
     }
 
-    private void countByTag(JsonObject tag) {
+    private void countByTag(JsonObject tag, BasicOutputCollector basicOutputCollector) {
         if (tag.has("@k") && tag.has("@v")) {
             JsonPrimitive key = tag.getAsJsonPrimitive("@k");
             JsonPrimitive value = tag.getAsJsonPrimitive("@v");
-            count(key.getAsString() + "=" + value.getAsString());
+            boltHelper.count(key.getAsString() + "=" + value.getAsString());
+            String result = boltHelper.getReturnMessage(10);
+            basicOutputCollector.emit(new Values(result));
         }
     }
 
-    private void count(String text) {
-        Integer count = counts.get(text);
-        if (count == null)
-            count = 0;
-        count++;
-        counts.put(text, count);
-    }
 
 
     @Override
     public void cleanup() {
-        List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
-        Collections.sort(list, new IntegerValueComparator<>());
-        for (Map.Entry<String, Integer> entry : list) {
-            String key = entry.getKey();
-            Integer value = entry.getValue();
-            System.out.println(key + ": " + value.toString());
-        }
+        List<Map.Entry<String, Integer>> list = boltHelper.getResultList();
+        boltHelper.print();
         printMostRelevanted(list, mostRelevantNodes, "Most relevant nodes: ");
         printMostRelevanted(list, mostRelevantWays, "Most relevant ways: ");
-
-
     }
 
     private void printMostRelevanted(List<Map.Entry<String, Integer>> list, List<String> relevant, String text) {
@@ -113,7 +101,7 @@ public class ObjectsCountBolt implements IBasicBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        outputFieldsDeclarer.declare(new Fields("message"));
     }
 
     @Override
