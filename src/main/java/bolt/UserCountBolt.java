@@ -39,13 +39,13 @@ public class UserCountBolt implements IBasicBolt {
                     }
                 }
             }
-            List<Map.Entry<String, Integer>> list = new LinkedList<>(counts.entrySet());
-            Collections.sort(list, new IntegerValueComparator<>());
             String results = "[";
-            for (Map.Entry<String, Integer> entry : getResultList()) {
-                String key = entry.getKey();
-                Integer value = entry.getValue();
-                results += "{\"name\":\"" + key + "\" \"count\":" + value.toString() + "},";
+            List<Map.Entry<String, Integer>> entries = getResultList();
+            int size = entries.size();
+            for (int i = size - 1; i > size - 11; i--) {
+                String key = entries.get(i).getKey();
+                Integer value = entries.get(i).getValue();
+                results += "{\"key\":\"" + key + "\", \"value\":" + value.toString() + "},";
             }
             results = results.substring(0, results.length() - 1);
             results += "]";
