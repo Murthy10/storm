@@ -1,9 +1,40 @@
 %!TEX root = ../dissertation.tex
 \begin{savequote}[75mm]
-Nulla facilisi. In vel sem. Morbi id urna in diam dignissim feugiat. Proin molestie tortor eu velit. Aliquam erat volutpat. Nullam ultrices, diam tempus vulputate egestas, eros pede varius leo.
-\qauthor{Quoteauthor Lastname}
+A good idea is about ten percent and implementation and hard work, and luck is 90 percent.
+\qauthor{Guy Kawasaki}
 \end{savequote}
 
 \chapter{Implementation}
+This chapter is about the implementation with Apache Storm to solve the defined queries.
+The idea of the test scenario is to use "OSM Augmented Diffs" as a stream.
+This diffs extend the ordinary minutely diffs of OSM with more information.
+The result contains all the nodes, ways and relations changed durring the time periode.
 
-\newthought{Lorem ipsum dolor sit amet}
+\section{Queries}
+The following list is about the queries which has to be done on the Augmented Diff stream.
+
+\begin{itemize}
+\item[A)] Leader board of top 10 OSM active users
+\item[B)] Leader board of top 10 OSM objects added
+\item[C)] Node objects with suspicious keys and values
+\item[D)] Way objects with only user tag "area=yes" without other user tags
+\end{itemize}
+
+\section{A) Leader board of top 10 OSM active users}
+It's about users who created or updated any OSM nodes all around the world.
+The users are identified with by the tags "uid" and "user".
+
+\section{B) Leader board of top 10 OSM objects added}
+Count all the created or updated nodes grouped by a combination of key and value.
+An example for this is "amenity=bench".
+
+\section{C) Node objects with suspicious keys and values}
+Detection of vandalism and unwanted bad actions in OpenStreetMap is a very difficult topic.
+Thus we focus on "Quality Assurance Monitoring" by filtering for suspicious tags of node or way elements.
+As an example for this issues are ";" in Tags like "crossing=island;uncontrolled".
+
+\section{D) Way objects with only user tag "area=yes" without other user tags}
+The point D) also deals with the vandalism problems.
+
+
+
