@@ -94,6 +94,7 @@ Thus leads me to take a closer look at these rules and add my reflection to them
         sequence of operations. Ideally the system should also use
         an active (i.e., non-polling) processing model.}
 
+\medskip
 This is also for me a very important point. The stream processing should not slow down the "in-stream".
 How can this target be reached? The paper says be aware of expensive storage operation.
 But I could imagine that this question depends most on the architecture of the processing engine.
@@ -105,13 +106,23 @@ So handle the streams as immutable and decouple the processing from the stream s
         “StreamSQL” language with built-in extensible stream-
         oriented primitives and operators.}
 
+\medskip
+Use something like "StreamSQL" is not a must have requirement in my eyes.
+I would even go further and say that a higher-level query language could not always fit the fast changing streams.
+So a flexible and easy to expand query language would be a better choice for me.
+Even in spite of the heavy maintenance and intelligibility.
+
 \subsection{Rule 3: Handle Stream Imperfections (Delayed, Missing
 and Out-of-Order Data)}
-
 \textit{The third requirement is to have built-in mechanisms to
         provide resiliency against stream “imperfections”,
         including missing and out-of-order data, which are
         commonly present in real-world data streams.}
+
+\medskip
+If the data of the stream does not appear like it used to be the stream processing engine should not crash and handle the problem.
+For me an other very fundamental requirement in the point of view that such streams often come from distributed systems.
+Which leads to a lot of hard to control error sources.
 
 \subsection{Rule 4: Generate Predictable Outcomes}
 \textit{The fourth requirement is that a stream processing engine
