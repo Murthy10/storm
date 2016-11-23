@@ -83,28 +83,91 @@ Thus the requirements in such real time stream processing systems are ambitious 
 \section{Eight Rules For Stream Procesing}
 In the paper "The 8 Requirements of Real-Time Stream Processing" Michael Stonebraker, Uğur Çetintemel and Stan Zdonik
 bring their thoughts about real-time stream processing together and write it down. It faces the fundamental ideas of stream processing
-and sums them up in eight rules which every allows us to measure and compare different technologies.
+and sums them up in eight rules which every stream processing engine should require.
+This allows us to measure and compare different technologies.
 Thus leads me to take a closer look at these rules and add my reflection to them.
 
 \subsection{Rule 1: Keep the Data Moving}
+\textit{The first requirement for a real-time stream processing
+        system is to process messages “in-stream”, without any
+        requirement to store them to perform any operation or
+        sequence of operations. Ideally the system should also use
+        an active (i.e., non-polling) processing model.}
 
-
+This is also for me a very important point. The stream processing should not slow down the "in-stream".
+How can this target be reached? The paper says be aware of expensive storage operation.
+But I could imagine that this question depends most on the architecture of the processing engine.
+So handle the streams as immutable and decouple the processing from the stream sink.
 
 
 \subsection{Rule 2: Query using SQL on Streams (StreamSQL)}
-
+\textit{The second requirement is to support a high-level
+        “StreamSQL” language with built-in extensible stream-
+        oriented primitives and operators.}
 
 \subsection{Rule 3: Handle Stream Imperfections (Delayed, Missing
 and Out-of-Order Data)}
 
-\subsectoin{Rule 4: Generate Predictable Outcomes}
+\textit{The third requirement is to have built-in mechanisms to
+        provide resiliency against stream “imperfections”,
+        including missing and out-of-order data, which are
+        commonly present in real-world data streams.}
+
+\subsection{Rule 4: Generate Predictable Outcomes}
+\textit{The fourth requirement is that a stream processing engine
+        must guarantee predictable and repeatable outcomes.}
+
 
 \subsection{Rule 5: Integrate Stored and Streaming Data}
-
+\textit{The fifth requirement is to have the capability to efficiently
+        store, access, and modify state information, and combine it
+        with live streaming data. For seamless integration, the
+        system should use a uniform language when dealing with
+        either type of data.}
 
 \subsection{Rule 6: Guarantee Data Safety and Availability}
+\textit{The sixth requirement is to ensure that the applications are
+        up and available, and the integrity of the data maintained at
+        all times, despite failures.}
+
 
 \subsection{Rule 7: Partition and Scale Applications Automatically}
-
+\textit{The seventh requirement is to have the capability to
+        distribute processing across multiple processors and
+        machines to achieve incremental scalability. Ideally, the
+        distribution should be automatic and transparent.}
 
 \subsection{Rule 8: Process and Respond Instantaneously}
+\textit{The eighth requirement is that a stream processing system
+must have a highly-optimized, minimal-overhead execution
+engine to deliver real-time response for high-volume
+applications.}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
