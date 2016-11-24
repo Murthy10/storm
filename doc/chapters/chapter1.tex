@@ -12,8 +12,11 @@ But they have not always been such an important deal like they is today with the
 Antecedent to handle this streams was an event driven way and do analytics after storing the data.\\
 
 \newpage
+\secton{Initial example}
+In this sectoin I'd like to give you a small example of how streams and stream processing could be more and more
+relevant. And I would like to do this by the example of a factory producing delicious frosted yoghurt.
 
-\section{Frozen yogurt}
+\subsection{Frozen yogurt factory}
 Let me explain the \textit{old} event driven way with a small example.\\
 Imagine a factory which produces frozen yogurt in different flavors.
 They weigh and register every cup of yogurt at the end of the assembly line.\\
@@ -128,6 +131,12 @@ Which leads to a lot of hard to control error sources.
 \textit{The fourth requirement is that a stream processing engine
         must guarantee predictable and repeatable outcomes.}
 
+\medskip
+The same input should always result in the same output.
+Easy said and easy to understand rule but in processing huge amount of data this could be in some cases very difficult.
+But you still want to be able to process data and not very entry in the stream is absolutely important.
+Thus it could be a good strategy to more or less randomly more or less randomly throw some messages away.
+Nevertheless the decisions you do and the processing on it should be reproducible.
 
 \subsection{Rule 5: Integrate Stored and Streaming Data}
 \textit{The fifth requirement is to have the capability to efficiently
@@ -136,11 +145,23 @@ Which leads to a lot of hard to control error sources.
         system should use a uniform language when dealing with
         either type of data.}
 
+\medskip
+I agree with this rule and past data and also current data should possible haven an influent
+on the results of the processing. So it is a good idea to use a uniform language.
+But I also think that the streaming engine needs to have the ability and flexibility to deal with different
+and unexpected data.
+
 \subsection{Rule 6: Guarantee Data Safety and Availability}
 \textit{The sixth requirement is to ensure that the applications are
         up and available, and the integrity of the data maintained at
         all times, despite failures.}
 
+\medskip
+Of course streaming engines need to be high-availability.
+But this is a very hard deal in the perspective of high performance,
+because high-availability also leads to some inevitable overheads.
+Thus i would say that it should be possible to handle guarante integrity of mission-critical information
+and also support less critical information to be processed in a super performant but less integrity way.
 
 \subsection{Rule 7: Partition and Scale Applications Automatically}
 \textit{The seventh requirement is to have the capability to
@@ -148,12 +169,21 @@ Which leads to a lot of hard to control error sources.
         machines to achieve incremental scalability. Ideally, the
         distribution should be automatic and transparent.}
 
+\medskip
+In the case of huge amount of data the ability to scale vertically is an absolute must have feature of
+every stream processing engine. For me this is one of the most important rules.
+
 \subsection{Rule 8: Process and Respond Instantaneously}
 \textit{The eighth requirement is that a stream processing system
 must have a highly-optimized, minimal-overhead execution
 engine to deliver real-time response for high-volume
 applications.}
 
+\medskip
+Like at the rule 7 sad, this is a hard tradeoff between availability and integrity.
+Thus a stream processing engine has to deal with this two requirements as good as possible
+and find a best fitting solution.
+Because the possible throughput can also have a decisive impact on the choice of a technology.
 
 
 
