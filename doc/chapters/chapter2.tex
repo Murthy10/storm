@@ -30,6 +30,14 @@ They can be chained or parallelised in a way that fits best for your current pro
 In generell Storm passes tuples between the different components.
 To organize this tuples there are topologies.
 
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.4\textwidth]{images/topology_example.png}
+\caption[Topology example]{Topology example}
+\end{figure}
+
 \subsection{Grouping}
 The Topology defines the grouping, this means how streams are consumed by the bolts and how they consume them.
 There are four kinds of grouping \textit{Shuffle Grouping}, \textit{Fields Grouping},
@@ -55,14 +63,66 @@ fine granular desicions about which bolt has to handle which tuple.
 \newpage
 
 \section{Spout}
-The entry point of each topology are the so called spouts. The spouts are responsible for their reliability,
+The entry point of each topology are the so called spouts. Their main task is to procure the date from the input source.
+After the access of the source the spout emits a list of defined fields, which are consumed by the bolts.
+The spouts are also responsible for reliability,
 thus you have to take care to implement them in a fault-tolerant way. This means that a spout must have the
-ability to deal with unprocessable messages from the stream.\\
+ability to deal with unprocessable and unpredictable messages from the stream.\\
 To handle the reliability at the spout you can add an ID to every message. If a message is correctly processed  by
 all the target bolts the \textit{ack} method of the spout is called. But if there were troubles or the timeout is
 reached the \textit{fail} method will be triggered.
 
+\subsubsection{Example}
+As an example you can imagine a spout which consumes data from a message queue and emits the data
+to the interessted bolts. All of this data steam is defined in storm topology.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.5\textwidth]{images/spout_example.png}
+\caption[Spout example]{Spout example}
+\end{figure}
+
+\subsubsection{Code}
+And in the code this could look like the following.
+\begin{lstlisting}
+TopologyBuilder builder = new TopologyBuilder();
+MessageQueueSpout spout = new MessageQueueSpout();
+PrinterBolt bolt = new PrinterBolt();
+
+builder.setSpout("spout", spout);
+builder.setBolt("bolt", bolt).shuffleGrouping("spout");
+\end{lstlisting}
+
+
 \newpage
 
 \section{Bolt}
+Bolts are the heartpieces, the engine of storm, they are responsible for the hard work of processing the data.
+A bolt takes tuples as input, does some operations on it and finally produces tuples as output.
+Normally a bolt implements the \textit{IRichBolt} interface, which has the following methods.
 
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.2\textwidth]{images/engine.png}
+\caption[Bolt engine]{Bolt engine}
+\end{figure}
+
+
+\subsubsection{public void prepare(Map map, TopologyContext topologyContext)}
+This method is allways called befor the bolts starts to process tuples\\ (before execute(...)).
+A possible task could be to reset a counter.
+
+
+\subsubsection{public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector)}
+The execute methode processes a singel tuple of input, so it is the core function of every bold.
+
+\subsubsection{public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)}
+The prepare method is responsible for defining the output schema of the bolt.
+If bolts are concatenated the output is a tuple ,but if the current bolt is may be the last bolt in the chain,
+and does a task like ,print to the standard output, you don't have to set an output type.
+
+\subsubsection{public void cleanup()}
+Is called when a bolt is going to shutdown. So you should do some tasks like a destructor does.
+For example disconnect an active database connection.
