@@ -33,6 +33,7 @@
 % Text layout.
 \RequirePackage[width=5.75in, letterpaper]{geometry}
 \usepackage{ragged2e}
+\usepackage{tabu}
 \usepackage{float}
 \usepackage{caption}
 \usepackage{listings}

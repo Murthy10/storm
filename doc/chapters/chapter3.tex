@@ -59,6 +59,30 @@ The point D) also deals with the vandalism problems.
 
 \newpage
 \section{Benchmark}
+
+Benchmarking is a very difficult topic and strongly depends on various parameters like the underlying hardware.
+Thus we decide to make this as hardware independent as possible.
+The idea is to produce a lot of small kafka message, like IoT does,
+and to count them. Then repeat this process and relate the number of processed messages with the time spent.
+
+For the message generation we had a small python script called "benchmark.py" which produces as much massages as you want
+and stores them in to kafka.
+
+The messages have got the following structure:
+
+   \begin{table}[h!]
+     \centering
+     \begin{tabular}{llllll}
+       \textbf{packetId}  & \textbf{TopicName} & \textbf{qos} & \textbf{retainFlag} & \textbf{payload} & \textbf{dupFlag} \\
+       0 & weather & 5 & False & 83 & True \\
+       1 & computer & 2 & True & 82 & False \\
+     \end{tabular}
+     \caption{MQTT Messages}
+     \label{MQTT Messages}
+   \end{table}
+
+To realize the benchmark with apache storm I tried two different topics.
+The first with only one Bolt, which is the non parallelism way. This leads to the blue curve on the diagramm.
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
@@ -66,6 +90,9 @@ The point D) also deals with the vandalism problems.
 \caption[Benchmark 1 Bolt]{Benchmark 1 Bolt}
 \end{figure}
 
+For the second approach I use four Bolts for parallelism.
+The decision for four Bolts depends on the four cores of the notebook which I used for the benchmarks.
+The result is the red curve on the diagramm.
 
 \begin{figure}[H]
 \centering
@@ -78,12 +105,17 @@ The point D) also deals with the vandalism problems.
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.9\textwidth]{images/benchmark.png}
+\includegraphics[width=1.0\textwidth]{images/benchmark.png}
 \caption[Benchmark Diagramm]{Benchmark Diagramm}
 \end{figure}
 
-
-
+\subsection{Conclusion}
+To take a good conclusion out of this benchmark is a hard tasks.
+On the one hand side it's no problem for storm to process millions of messages.
+But on the other hand side I couldn't perform better with more messages. It was more or less a linear behavior.
+An a bit unsuspected was that the parallelism topic was slower than to work with only one Bolt.
+Maybe this behavior would change with bigger messages.
+I think the bottleneck in the construction was the communication with kafka. And so the throughput was limited by the networking.
 
 
 
