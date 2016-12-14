@@ -36,25 +36,14 @@ The following list is about the queries which has to be done on the Augmented Di
 \item[D)] Way objects with only user tag "area=yes" without other user tags
 \end{itemize}
 
-\subsection{A) Leader board of top 10 OSM active users}
-It's about users who created or updated any OSM nodes all around the world.
-The users are identified by the tags "uid" and "user".
-
-\subsection{B) Leader board of top 10 OSM objects added}
-Count all the created or updated nodes grouped by a combination of key and value.
-An example for this is "amenity=bench".
-
-\subsection{C) Node objects with suspicious keys and values}
-Detection of vandalism and unwanted bad actions in OpenStreetMap is a very difficult topic.
-Thus we focus on "Quality Assurance Monitoring" by filtering for suspicious tags of node or way elements.
-As an example for this issues are ";" in Tags like "crossing=island;uncontrolled".
-
-\subsection{D) Way objects with only user tag "area=yes" without other user tags}
-The point D) also deals with the vandalism problems.
-
-
 \newpage
 \section{Topic of the queries}
+With the queries we have to solve in mind. I have to design a fitting arcitecture for Apache Storm.
+So the first step is to get the messages from kafka, then converte the message string to JSON,
+do the queries on the JSON stream and finally make the result available.
+\medskip
+This leads me to the following Apache Storm Topic:
+
 
 
 \newpage
@@ -67,19 +56,18 @@ and to count them. Then repeat this process and relate the number of processed m
 
 For the message generation we had a small python script called "benchmark.py" which produces as much massages as you want
 and stores them in to kafka.
-
 The messages have got the following structure:
 
-   \begin{table}[h!]
-     \centering
-     \begin{tabular}{llllll}
-       \textbf{packetId}  & \textbf{TopicName} & \textbf{qos} & \textbf{retainFlag} & \textbf{payload} & \textbf{dupFlag} \\
-       0 & weather & 5 & False & 83 & True \\
-       1 & computer & 2 & True & 82 & False \\
-     \end{tabular}
-     \caption{MQTT Messages}
-     \label{MQTT Messages}
-   \end{table}
+\begin{table}[h!]
+ \centering
+ \begin{tabular}{llllll}
+   \textbf{packetId}  & \textbf{TopicName} & \textbf{qos} & \textbf{retainFlag} & \textbf{payload} & \textbf{dupFlag} \\
+   0 & weather & 5 & False & 83 & True \\
+   1 & computer & 2 & True & 82 & False \\
+ \end{tabular}
+ \caption{MQTT Messages}
+ \label{tab:messages}
+\end{table}
 
 To realize the benchmark with apache storm I tried two different topics.
 The first with only one Bolt, which is the non parallelism way. This leads to the blue curve on the diagramm.
