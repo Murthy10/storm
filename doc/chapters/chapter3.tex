@@ -37,14 +37,26 @@ The following list is about the queries which has to be done on the Augmented Di
 \end{itemize}
 
 \newpage
-\section{Topic of the queries}
+\section{Topology of the queries}
 With the queries we have to solve in mind. I have to design a fitting arcitecture for Apache Storm.
 So the first step is to get the messages from kafka, then converte the message string to JSON,
-do the queries on the JSON stream and finally make the result available.
+do the queries on the JSON stream and finally make the result available.\\
 \medskip
-This leads me to the following Apache Storm Topic:
-
-
+This leads me to the following Apache Storm topology:
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=1.0\textwidth]{images/impl_topic.png}
+\caption[Topic for queries]{Topic for queries}
+\end{figure}
+Let's have a closer look to some implementation details of the image above.
+To read the messages from the kafka osm topic I used the \textit{KafkaSpout} class from org.apache.storm.kafka.
+This class handles the communication with kafka and acts like a consumer, furthermore it makes the string messages availible for the bolts.
+The consumed messages are in text format and needs to be casted to JSON for this purpose I implemented a \textit{StringtoJsonBolt} class.
+After this conversion I used an all grouping approach, which emits the JSON data to all connected bolts.
+Each following bolt is responsible for defined querie, thus leads to the classes \textit{UserCountBolt}, \textit{ObjectCountbolt}, \textit{SuspicousBolt} and \textit{AreaYesBolt}.
+When the bolts have done their queries on the JSON data there is always a connected \textit{KafkaBolt} class from org.apache.storm.kafka,
+which publishs the results to the fitting kafka topic.
 
 \newpage
 \section{Benchmark}

@@ -51,7 +51,7 @@
 \usepackage{hyperref}
 \RequirePackage{url}
 \RequirePackage{amssymb}
-\AtBeginEnvironment{tabular}{\addfontfeature{RawFeature=+tnum}}
+%\AtBeginEnvironment{tabular}{\addfontfeature{RawFeature=+tnum}}
 \widowpenalty=300
 \clubpenalty=300
 \RequirePackage[labelfont={bf,sf,footnotesize,singlespacing},
