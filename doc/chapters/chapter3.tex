@@ -38,8 +38,8 @@ The following list is about the queries which has to be done on the Augmented Di
 
 \newpage
 \section{Topology of the queries}
-With the queries we have to solve in mind. I have to design a fitting arcitecture for Apache Storm.
-So the first step is to get the messages from kafka, then converte the message string to JSON,
+With the queries we have to solve in mind, I have to design a fitting arcitecture for Apache Storm.
+So the first step is to get the messages from Kafka, then converte the message string to JSON,
 do the queries on the JSON stream and finally make the result available.\\
 \medskip
 This leads me to the following Apache Storm topology:
@@ -50,13 +50,13 @@ This leads me to the following Apache Storm topology:
 \caption[Topic for queries]{Topic for queries}
 \end{figure}
 Let's have a closer look to some implementation details of the image above.
-To read the messages from the kafka osm topic I used the \textit{KafkaSpout} class from org.apache.storm.kafka.
+To read the messages from the Kafka osm topic I used the \textit{KafkaSpout} class from org.apache.storm.kafka.
 This class handles the communication with kafka and acts like a consumer, furthermore it makes the string messages availible for the bolts.
 The consumed messages are in text format and needs to be casted to JSON for this purpose I implemented a \textit{StringtoJsonBolt} class.
 After this conversion I used an all grouping approach, which emits the JSON data to all connected bolts.
-Each following bolt is responsible for defined querie, thus leads to the classes \textit{UserCountBolt}, \textit{ObjectCountbolt}, \textit{SuspicousBolt} and \textit{AreaYesBolt}.
+Every following bolt is responsible for the defined querie, thus leads to the classes \textit{UserCountBolt}, \textit{ObjectCountbolt}, \textit{SuspicousBolt} and \textit{AreaYesBolt}.
 When the bolts have done their queries on the JSON data there is always a connected \textit{KafkaBolt} class from org.apache.storm.kafka,
-which publishs the results to the fitting kafka topic.
+which publishs the results to the fitting Kafka topic.
 
 \newpage
 \section{Benchmark}
@@ -81,7 +81,7 @@ The messages have got the following structure:
  \label{tab:messages}
 \end{table}
 
-To realize the benchmark with apache storm I tried two different topics.
+To realize the benchmark with apache storm I tried two different topologies.
 The first with only one Bolt, which is the non parallelism way. This leads to the blue curve on the diagramm.
 \begin{figure}[H]
 \centering
@@ -113,9 +113,9 @@ The result is the red curve on the diagramm.
 To take a good conclusion out of this benchmark is a hard tasks.
 On the one hand side it's no problem for storm to process millions of messages.
 But on the other hand side I couldn't perform better with more messages. It was more or less a linear behavior.
-An a bit unsuspected was that the parallelism topic was slower than to work with only one Bolt.
+And a bit unsuspected was that the parallelism topic was slower than to work with only one Bolt.
 Maybe this behavior would change with bigger messages.
-I think the bottleneck in the construction was the communication with kafka. And so the throughput was limited by the networking.
+I think the bottleneck in the construction was the communication with Kafka. And so the throughput was limited by the networking.
 
 
 

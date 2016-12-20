@@ -13,7 +13,7 @@ on September the 18, 2013 Nathan moved Storme to Apache Incubator.\\
 
 Storm works with different types of components which are responsible for clear defined task.
 This components are bundled and managed in a so called \textbf{Topology}.
-The entrypoint and the stream input is handled by a \textbf{Spout}, the spout passes to \textbf{Bolts}.
+The entrypoint and the stream input is handled by a \textbf{Spout}, the spout passes data to the \textbf{Bolts}.
 Bolts are responsible for the main data processing and persists the data.
 They can be chained or parallelised in a way that fits best for your current problem.
 
@@ -29,8 +29,6 @@ They can be chained or parallelised in a way that fits best for your current pro
 \section{Topology}
 In generell Storm passes tuples between the different components.
 To organize this tuples there are topologies.
-
-
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
@@ -45,15 +43,15 @@ There are four kinds of grouping \textit{Shuffle Grouping}, \textit{Fields Group
 
 \subsubsection{Shuffle Grouping}
 Shuffle Grouping takes a single entry from the source and sends each tuple to a randomly choosen bolt,
-which is listening to this kind of tuples. It also garanties that each consumer get's the same number of tuples.
+which is listening to this kind of tuples. It also garanties that each consumer gets more or less the same number of tuples.
 
 \subsubsection{Fields Grouping}
-With Fields Grouping it is possible to send toples to spezified bolts based on the fields of the tuple.
+With Fields Grouping it is possible to send tuples to spezified bolts based on the fields of the tuple.
 It takes care that the same combination of fields is always sent to the same bolt.
 
 \subsubsection{All Grouping}
-All Grouping sends every tuple to all the bolts. This is helpful for tasks like signals or
-use different filters for alerting systems.
+All Grouping sends every tuple to all the bolts. This is helpful for tasks like signals or to
+use different filters for alerting systems working on the same input.
 
 \subsubsection{Custom Grouping}
 It is possible to build your on grouping based on the stream. This is very helpful if you have to make
@@ -74,7 +72,7 @@ reached the \textit{fail} method will be triggered.
 
 \subsubsection{Example}
 As an example you can imagine a spout which consumes data from a message queue and emits the data
-to the interessted bolts. All of this data steam is defined in storm topology.
+to the interessted bolts. All of this data steam is defined in the Storm topology.
 
 \begin{figure}[H]
 \centering
@@ -111,18 +109,19 @@ Normally a bolt implements the \textit{IRichBolt} interface, which has the follo
 
 
 \subsubsection{public void prepare(Map map, TopologyContext topologyContext)}
-This method is allways called befor the bolts starts to process tuples\\ (before execute(...)).
+This method is always called befor the bolts starts to process tuples\\ (before execute(...)).
 A possible task could be to reset a counter.
 
 
 \subsubsection{public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector)}
 The execute methode processes a singel tuple of input, so it is the core function of every bold.
+So all the logic should be done here, for example filter a stream or counting the words of the input.
 
 \subsubsection{public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)}
 The prepare method is responsible for defining the output schema of the bolt.
 If bolts are concatenated the output is a tuple ,but if the current bolt is may be the last bolt in the chain,
-and does a task like ,print to the standard output, you don't have to set an output type.
+and does a task like, print to the standard output, you don't have to set an output type.
 
 \subsubsection{public void cleanup()}
-Is called when a bolt is going to shutdown. So you should do some tasks like a destructor does.
+Cleanup() is called when a bolt is going to shutdown. So you should do some tasks like a destructor does.
 For example disconnect an active database connection.

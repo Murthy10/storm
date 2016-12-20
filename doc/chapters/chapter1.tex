@@ -8,8 +8,8 @@ Steams are older then computers so it is not a big surprice that streams
 and the processing of them isn't a absolutly new topic in the computer science world.
 Historically there are techniques like \textbf{logging} or in the domain driven development area there is \textbf{event sourcing},
 which are very similar to streaming processing.
-But they have not always been such an important deal like they is today with the with the unbelievable amount of data.
-Antecedent to handle this streams was an event driven way and do analytics after storing the data.\\
+But they have not always been such an important deal like they are today with the unbelievable amount of data.
+The antecedent way to handle this streams was an event driven one and to do analytics after storing the data.\\
 
 \newpage
 
@@ -32,7 +32,7 @@ They weigh and register every cup of yogurt at the end of the assembly line.\\
 \subsection{Common architecture}
 The factory has sensors which weight the cups and this weights are sent to a server.
 The server handles the request and stores the frozen yogurt with his weight in the database.
-for analytic tasks there is a web application. If you are now interested in the total amount of produced cups.
+For analytic tasks there is a web application. If you are now interested in the total amount of produced cups.
 You can simply open the browser go to the analytic page.
 This starts a request to the server and the server will call the database with a quey like "select count(*) from frozen\_yogurt".
 After the quey is executed you will get the result from the server and have the aggregated nummer on your screen.\\
@@ -48,7 +48,7 @@ After the quey is executed you will get the result from the server and have the 
 \newpage
 
 Now the owner of the factory does a very good business and they are able to expand the production.
-And with this expansion they also add a lot more of sensors to the assembly line like, a temperature sensor,
+And with this expansion they also add a lot more of sensors to the assembly line like a temperature sensor,
 optical recognition to check if the cups are always full and a lot more.\\
 The requirements of the system are also updated the owner want to have statistic about the production all the time
 and want's immediately notifications if for example the temperature is to high.\\
@@ -85,7 +85,7 @@ Thus the requirements in such real time stream processing systems are ambitious 
 \newpage
 
 \section{Eight Rules For Stream Procesing}
-In the paper "The 8 Requirements of Real-Time Stream Processing" Michael Stonebraker, Uğur Çetintemel and Stan Zdonik
+In the paper "The 8 Requirements of Real-Time Stream Processing" Michael Stonebraker, Ugur Cetintemel and Stan Zdonik
 bring their thoughts about real-time stream processing together and write it down. It faces the fundamental ideas of stream processing
 and sums them up in eight rules which every stream processing engine should require.
 This allows us to measure and compare different technologies.
@@ -116,6 +116,7 @@ I would even go further and say that a higher-level query language could not alw
 So a flexible and easy to expand query language would be a better choice for me.
 Even in spite of the heavy maintenance and intelligibility.
 
+\newpage
 \subsection{Rule 3: Handle Stream Imperfections (Delayed, Missing
 and Out-of-Order Data)}
 \textit{The third requirement is to have built-in mechanisms to
@@ -135,8 +136,8 @@ Which leads to a lot of hard to control error sources.
 \medskip
 The same input should always result in the same output.
 Easy said and easy to understand rule but in processing huge amount of data this could be in some cases very difficult.
-But you still want to be able to process data and not very entry in the stream is absolutely important.
-Thus it could be a good strategy to more or less randomly more or less randomly throw some messages away.
+But you still want to be able to process data and not every entry in the stream is absolutely important.
+Thus it could be a good strategy to more or less randomly throw some messages away.
 Nevertheless the decisions you do and the processing on it should be reproducible.
 
 \subsection{Rule 5: Integrate Stored and Streaming Data}
@@ -147,11 +148,12 @@ Nevertheless the decisions you do and the processing on it should be reproducibl
         either type of data.}
 
 \medskip
-I agree with this rule and past data and also current data should possible haven an influent
+I agree with this rule, past data and also current data should possible haven an influent
 on the results of the processing. So it is a good idea to use a uniform language.
 But I also think that the streaming engine needs to have the ability and flexibility to deal with different
 and unexpected data.
 
+\newpage
 \subsection{Rule 6: Guarantee Data Safety and Availability}
 \textit{The sixth requirement is to ensure that the applications are
         up and available, and the integrity of the data maintained at
@@ -161,7 +163,7 @@ and unexpected data.
 Of course streaming engines need to be high-availability.
 But this is a very hard deal in the perspective of high performance,
 because high-availability also leads to some inevitable overheads.
-Thus i would say that it should be possible to handle guarante integrity of mission-critical information
+Thus I would say that it should be possible to handle guarante integrity of mission-critical information
 and also support less critical information to be processed in a super performant but less integrity way.
 
 \subsection{Rule 7: Partition and Scale Applications Automatically}
