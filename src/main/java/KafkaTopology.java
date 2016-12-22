@@ -39,9 +39,9 @@ public class KafkaTopology {
         builder.setSpout("kafkaSpout", kafkaSpout, 1);
 
         //builder.setBolt("benchmarkBolt", new BenchmarkBolt(), 4).shuffleGrouping("kafkaSpout");
+        //builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
 
         builder.setBolt("stringToJsonBolt", new StringToJsonBolt()).shuffleGrouping("kafkaSpout");
-        builder.setBolt("printer", new JsonPrinterBolt()).shuffleGrouping("stringToJsonBolt");
         builder.setBolt("userCountBolt", new UserCountBolt()).allGrouping("stringToJsonBolt");
         builder.setBolt("objectCountBolt", new ObjectsCountBolt()).allGrouping("stringToJsonBolt");
         builder.setBolt("suspiciousBolt", new SuspiciousBolt()).allGrouping("stringToJsonBolt");

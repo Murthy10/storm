@@ -15,6 +15,8 @@ import org.apache.storm.tuple.Values;
 import java.util.Map;
 
 public class AreaYesBolt implements IBasicBolt {
+    private int areaYesCounter = 0;
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext) {
 
@@ -62,15 +64,16 @@ public class AreaYesBolt implements IBasicBolt {
         if (tag.has("@k") && tag.has("@v")) {
             JsonPrimitive key = tag.getAsJsonPrimitive("@k");
             JsonPrimitive value = tag.getAsJsonPrimitive("@v");
-            if (key.getAsString().equals("area") && value.getAsString().equals("yes")) {
+            if (key.getAsString().toLowerCase().equals("area") && value.getAsString().toLowerCase().equals("yes")) {
                 basicOutputCollector.emit(new Values(node.getAsString()));
+                this.areaYesCounter++;
             }
         }
     }
 
     @Override
     public void cleanup() {
-
+        System.out.println("Number of Area=Yes: " + Integer.toString(areaYesCounter));
     }
 
     @Override

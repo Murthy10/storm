@@ -16,6 +16,8 @@ import org.apache.storm.tuple.Values;
 import java.util.Map;
 
 public class SuspiciousBolt implements IBasicBolt {
+    private int suspiciousCounter = 0;
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext) {
 
@@ -76,15 +78,18 @@ public class SuspiciousBolt implements IBasicBolt {
             JsonPrimitive value = tag.getAsJsonPrimitive("@v");
             if (key.getAsString().length() <= 2 || key.getAsString().toLowerCase().equals("name") || key.getAsString().toLowerCase().equals("ref")) {
                 basicOutputCollector.emit(new Values(node.getAsString()));
+                suspiciousCounter++;
             }
             if (value.getAsString().length() == 1 && !(StringUtils.containsAny(value.getAsString(), "0123456789NSEWF"))) {
                 basicOutputCollector.emit(new Values(node.getAsString()));
+                suspiciousCounter++;
             }
         }
     }
 
     @Override
     public void cleanup() {
+        System.out.println("Number of Suspicious: " + Integer.toString(suspiciousCounter));
 
     }
 
