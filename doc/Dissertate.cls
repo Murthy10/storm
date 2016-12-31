@@ -151,7 +151,7 @@
 \renewcommand{\frontmatter}{
     \input{frontmatter/personalize}
     \maketitle
-    \copyrightpage
+    % \copyrightpage
     \abstractpage
     \tableofcontents
     % \listoffigures % optional
