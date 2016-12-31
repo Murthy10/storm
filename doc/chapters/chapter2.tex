@@ -12,15 +12,15 @@ He open sourced Storm on September the 19th in 2011. The project rapidly got a b
 on September the 18, 2013 Nathan moved Storme to Apache Incubator.\\
 
 Storm works with different types of components which are responsible for clear defined task.
-This components are bundled and managed in a so called \textbf{Topology}.
+The components are bundled and managed in a so called \textbf{Topology}.
 The entrypoint and the stream input is handled by a \textbf{Spout}, the spout passes data to the \textbf{Bolts}.
 Bolts are responsible for the main data processing and persists the data.
 They can be chained or parallelised in a way that fits best for your current problem.
 
-\begin{figure}[hp]
+\begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=100pt]{images/storm.png}
+\includegraphics[width=80pt]{images/storm.png}
 \caption[Storm]{Storm}
 \end{figure}
 
@@ -28,7 +28,7 @@ They can be chained or parallelised in a way that fits best for your current pro
 
 \section{Topology}
 In generell Storm passes tuples between the different components.
-To organize this tuples there are topologies.
+To organize the tuples there are topologies.
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
@@ -61,7 +61,7 @@ fine granular desicions about which bolt has to handle which tuple.
 \newpage
 
 \section{Spout}
-The entry point of each topology are the so called spouts. Their main task is to procure the date from the input source.
+The entry point of each topology are the so called spouts. Their main task is to procure the data from the input source.
 After the access of the source the spout emits a list of defined fields, which are consumed by the bolts.
 The spouts are also responsible for reliability,
 thus you have to take care to implement them in a fault-tolerant way. This means that a spout must have the
@@ -77,7 +77,7 @@ to the interessted bolts. All of this data steam is defined in the Storm topolog
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.5\textwidth]{images/spout_example.png}
+\includegraphics[width=0.4\textwidth]{images/spout_example.png}
 \caption[Spout example]{Spout example}
 \end{figure}
 
@@ -96,7 +96,7 @@ builder.setBolt("bolt", bolt).shuffleGrouping("spout");
 \newpage
 
 \section{Bolt}
-Bolts are the heartpieces, the engine of storm, they are responsible for the hard work of processing the data.
+Bolts are the heartpieces, the engine of Apache Storm, they are responsible for the hard work of processing the data.
 A bolt takes tuples as input, does some operations on it and finally produces tuples as output.
 Normally a bolt implements the \textit{IRichBolt} interface, which has the following methods.
 

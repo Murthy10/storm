@@ -9,13 +9,14 @@ and the processing of them isn't a absolutly new topic in the computer science w
 Historically there are techniques like \textbf{logging} or in the domain driven development area there is \textbf{event sourcing},
 which are very similar to streaming processing.
 But they have not always been such an important deal like they are today with the unbelievable amount of data.
-The antecedent way to handle this streams was an event driven one and to do analytics after storing the data.\\
+The antecedent way to handle the streams was an event driven one and to do analytics after storing the data.\\
 
-\newpage
 
 \section{Initial example}
-In this sectoin I'd like to give you a small example of how streams and stream processing could be more and more
+At the current section I'd like to give you a small example of how streams and stream processing could be more and more
 relevant. And I would like to do this by the example of a factory producing delicious frosted yoghurt.
+
+\newpage
 
 \subsection{Frozen yogurt factory}
 Let me explain the \textit{old} event driven way with a small example.\\
@@ -25,33 +26,33 @@ They weigh and register every cup of yogurt at the end of the assembly line.\\
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.3\textwidth]{images/cups.png}
+\includegraphics[width=0.4\textwidth]{images/cups.png}
 \caption[Frozen yogurt assembly line]{frozen yogurt assembly line}
 \end{figure}
 
 \subsection{Common architecture}
-The factory has sensors which weight the cups and this weights are sent to a server.
+The factory has sensors which weight the cups and the weights are sent to a server.
 The server handles the request and stores the frozen yogurt with his weight in the database.
 For analytic tasks there is a web application. If you are now interested in the total amount of produced cups.
 You can simply open the browser go to the analytic page.
-This starts a request to the server and the server will call the database with a quey like "select count(*) from frozen\_yogurt".
+Which starts a request to the server and the server will call the database with a quey like "select count(*) from frozen\_yogurt".
 After the quey is executed you will get the result from the server and have the aggregated nummer on your screen.\\
 (This is more or less a default example of a Three-tier architecture)
 
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.45\textwidth]{images/three_tier.png}
+\includegraphics[width=0.5\textwidth]{images/three_tier.png}
 \caption[Three-tier architecture]{Three-tier architecture}
 \end{figure}
 
 \newpage
 
 Now the owner of the factory does a very good business and they are able to expand the production.
-And with this expansion they also add a lot more of sensors to the assembly line like a temperature sensor,
+And with the expansion they add a lot more of sensors to the assembly line, like a temperature sensor,
 optical recognition to check if the cups are always full and a lot more.\\
-The requirements of the system are also updated the owner want to have statistic about the production all the time
-and want's immediately notifications if for example the temperature is to high.\\
+The requirements of the system are updated too, the owner wants to have statistic about the production all the time
+and immediately notifications if for example the temperature is to high.\\
 These new requirements leads to new challenges in the architecutre of the system and are hard to implement with the
 current state and the enormus data produced by the all sensors.
 
@@ -59,7 +60,7 @@ current state and the enormus data produced by the all sensors.
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.5\textwidth]{images/sensors.png}
-\caption[sensors everywhere]{sensors everywhere}
+\caption[Sensors everywhere]{Sensors everywhere}
 \end{figure}
 
 \subsection{Streaming architecture}
@@ -73,13 +74,14 @@ For this purpose there has grown up a lot of new techniques and frameworks durin
 \caption[streaming architecture]{streaming architecture}
 \end{figure}
 
-\newpage
+Instead of the old three-tier architecture they added a message / logging queue like Apache Kafka to handle all concurrent access to data.
+Which enables a seamless access for the stream processing frameworks and the storing of the data for later analytics.
 
 \subsection{Conclusion}
-The new streaming architecture of the frozen yogurt factory has got a lot of advantages but also has to handle some big difficulties.
+The new streaming architecture of the frozen yogurt factory has got a lot of advantages, but some big difficulties to handle too.
 Now it is possible to get very fast access to production statistics, deal with the huge amount of data and throw alerts in real time.
 It's also helpfull in the developers perspective, because you can add several consumer to the stream.
-Normaly this stream is immutable if you use a technologie like kafka, which has the advantage that there aren't concurrency problems anymore.
+Normaly these streams are immutable, which solves the concurrent access of different consumers.
 Thus the requirements in such real time stream processing systems are ambitious and we will face them in the next section.
 
 \newpage
@@ -88,8 +90,8 @@ Thus the requirements in such real time stream processing systems are ambitious 
 In the paper "The 8 Requirements of Real-Time Stream Processing" Michael Stonebraker, Ugur Cetintemel and Stan Zdonik
 bring their thoughts about real-time stream processing together and write it down. It faces the fundamental ideas of stream processing
 and sums them up in eight rules which every stream processing engine should require.
-This allows us to measure and compare different technologies.
-Thus leads me to take a closer look at these rules and add my reflection to them.
+That allows us to measure and compare different technologies.
+Thus leads me to take a closer look at these eight rules and add my personal reflection to them.
 
 \subsection{Rule 1: Keep the Data Moving}
 \textit{The first requirement for a real-time stream processing
@@ -99,7 +101,7 @@ Thus leads me to take a closer look at these rules and add my reflection to them
         an active (i.e., non-polling) processing model.}
 
 \medskip
-This is also for me a very important point. The stream processing should not slow down the "in-stream".
+This is a very important point for me too. The stream processing should not slow down the "in-stream".
 How can this target be reached? The paper says be aware of expensive storage operation.
 But I could imagine that this question depends most on the architecture of the processing engine.
 So handle the streams as immutable and decouple the processing from the stream sink.
@@ -114,6 +116,7 @@ So handle the streams as immutable and decouple the processing from the stream s
 Use something like "StreamSQL" is not a must have requirement in my eyes.
 I would even go further and say that a higher-level query language could not always fit the fast changing streams.
 So a flexible and easy to expand query language would be a better choice for me.
+Or if the maintainer are developers to realise the queries in code would be a good way too.
 Even in spite of the heavy maintenance and intelligibility.
 
 \newpage
@@ -135,8 +138,9 @@ Which leads to a lot of hard to control error sources.
 
 \medskip
 The same input should always result in the same output.
-Easy said and easy to understand rule but in processing huge amount of data this could be in some cases very difficult.
-But you still want to be able to process data and not every entry in the stream is absolutely important.
+Easy said and easy to understand rule but in processing huge amount of data it could be in some cases very difficult.
+Imagine that there is more data then you are able to handle with all your computing power,
+but you still want to be able to process data and not every entry in the stream is absolutely important.
 Thus it could be a good strategy to more or less randomly throw some messages away.
 Nevertheless the decisions you do and the processing on it should be reproducible.
 
@@ -162,7 +166,7 @@ and unexpected data.
 \medskip
 Of course streaming engines need to be high-availability.
 But this is a very hard deal in the perspective of high performance,
-because high-availability also leads to some inevitable overheads.
+because high-availability leads to some inevitable overheads.
 Thus I would say that it should be possible to handle guarante integrity of mission-critical information
 and also support less critical information to be processed in a super performant but less integrity way.
 

@@ -5,18 +5,18 @@ A good idea is about ten percent and implementation and hard work, and luck is 9
 \end{savequote}
 
 \chapter{Implementation}
-This chapter is about the implementation with Apache Storm to solve the defined queries and to do the benchmarks.
-The idea of the test scenario is to use "OSM Augmented Diffs" as a stream.
-This diffs extend the ordinary minutely diffs of OSM with more information.
+The final chapter is about the implementation with Apache Storm to solve the defined queries and to do the benchmarks.
+The idea of the test scenario is to use "Augmented Diffs" from OpenStreetMap as a stream.
+The diffs extend the ordinary minutely diffs of OpenStreetMap with more information.
 The result contains all the nodes, ways and relations changed durring the time periode.
 
 \newpage
 
 \section{Test Setup}
 For the implementation there is a given test setup.
-The Open Street Map Augmented diffs are minutelly collected by a script executed as a cron job.
-The script acts as an producer for Kafka and the data is now accessible from these message queue.
-Furthermore the data is ready to be consumed by the stream processing engine and in this case ready for Apache Storm.
+The OpenStreetMap augmented diffs are minutelly collected by a script executed as a cron job.
+The script acts as an producer for Apache Kafka and the data is now accessible from these message queue.
+Furthermore the data is ready to be consumed by the stream processing engine and in the current case ready for Apache Storm.
 
 \begin{figure}[H]
 \centering
@@ -50,24 +50,29 @@ This leads me to the following Apache Storm topology:
 \caption[Topic for queries]{Topic for queries}
 \end{figure}
 Let's have a closer look to some implementation details of the image above.
-To read the messages from the Kafka osm topic I used the \textit{KafkaSpout} class from org.apache.storm.kafka.
-This class handles the communication with kafka and acts like a consumer, furthermore it makes the string messages availible for the bolts.
+To read the messages from the Kafka osm topic, a topic is something lika a tabel in a relational database, I used the \textit{KafkaSpout} class from org.apache.storm.kafka.
+This class handles the communication with Kafka and acts like a consumer, furthermore it makes the string messages availible for the bolts.
+
 The consumed messages are in text format and needs to be casted to JSON for this purpose I implemented a \textit{StringtoJsonBolt} class.
-After this conversion I used an all grouping approach, which emits the JSON data to all connected bolts.
+
+After this conversion I used an all grouping topology approach, which emits the JSON data to all connected bolts.
+
 Every following bolt is responsible for the defined querie, thus leads to the classes \textit{UserCountBolt}, \textit{ObjectCountbolt}, \textit{SuspicousBolt} and \textit{AreaYesBolt}.
 When the bolts have done their queries on the JSON data there is always a connected \textit{KafkaBolt} class from org.apache.storm.kafka,
-which publishs the results to the fitting Kafka topic.
+which finally publishs the results to the fitting Kafka topic.
+
+And makes the data available for presentation tasks or further processing.
 
 \newpage
 \section{Benchmark}
 
 Benchmarking is a very difficult topic and strongly depends on various parameters like the underlying hardware.
 Thus we decide to make this as hardware independent as possible.
-The idea is to produce a lot of small kafka message, like IoT does,
-and to count them. Then repeat this process and relate the number of processed messages with the time spent.
+The idea is to produce a lot of small message, like IoT does,
+and count all of them. Then repeat this process and relate the number of processed messages with the time spent.
 
-For the message generation we had a small python script called "benchmark.py" which produces as much massages as you want
-and stores them in to kafka.
+For the message generation we had a small python script called "benchmark.py" which produces as much messages as you want
+and provide them with Apache Kafka.
 The messages have got the following structure:
 
 \begin{table}[h!]
@@ -81,8 +86,8 @@ The messages have got the following structure:
  \label{tab:messages}
 \end{table}
 
-To realize the benchmark with apache storm I tried two different topologies.
-The first with only one Bolt, which is the non parallelism way. This leads to the blue curve on the diagramm.
+To realize the benchmark with Apache Storm I tried two different topologies.
+The first with only one Bolt, which is the non parallelism way.
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
@@ -90,9 +95,9 @@ The first with only one Bolt, which is the non parallelism way. This leads to th
 \caption[Benchmark 1 Bolt]{Benchmark 1 Bolt}
 \end{figure}
 
-For the second approach I use four Bolts for parallelism.
+For the second approach I used four Bolts for parallelism.
 The decision for four Bolts depends on the four cores of the notebook which I used for the benchmarks.
-The result is the red curve on the diagramm.
+
 
 \begin{figure}[H]
 \centering
@@ -101,6 +106,7 @@ The result is the red curve on the diagramm.
 \caption[Benchmark 4 Bolts]{Benchmark 4 Bolts}
 \end{figure}
 
+\newpage
 
 \begin{figure}[H]
 \centering
@@ -108,6 +114,9 @@ The result is the red curve on the diagramm.
 \includegraphics[width=1.0\textwidth]{images/benchmark.png}
 \caption[Benchmark Diagramm]{Benchmark Diagramm}
 \end{figure}
+
+The blue curve was the non parallel one with only one Bolt and
+the red was the parallel way with four Bolts.
 
 \subsection{Conclusion}
 To take a good conclusion out of this benchmark is a hard tasks.
