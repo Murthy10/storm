@@ -55,7 +55,7 @@ public class AreaYesBolt implements IBasicBolt {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong!");
+            System.out.println("AreaYes: Something went wrong!");
             System.out.println(e);
         }
     }

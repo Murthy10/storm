@@ -58,7 +58,7 @@ public class ObjectsCountBolt implements IBasicBolt {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong!");
+            System.out.println("ObjectCountBolt: Something went wrong!");
             System.out.println(e);
         }
     }

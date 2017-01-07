@@ -26,6 +26,7 @@ public class StringToJsonBolt implements IBasicBolt {
             JsonObject jsonObject = (JsonObject) jsonParser.parse(diff);
             basicOutputCollector.emit(new Values(jsonObject));
         } catch (JsonParseException e) {
+            System.out.println("StringToJson: Something went wrong!");
             e.printStackTrace();
         }
     }

@@ -37,16 +37,16 @@ public class SuspiciousBolt implements IBasicBolt {
                         JsonObject node = action.getAsJsonObject("node");
                         if (node.has("tag")) {
                             JsonElement jsonTag = node.get("tag");
-                            if (jsonTag.isJsonArray()) {
+                            if (jsonTag.isJsonArray() && !node.isJsonNull()) {
                                 JsonArray tags = jsonTag.getAsJsonArray();
                                 for (JsonElement tagElement : tags) {
-                                    if (tags.isJsonObject()) {
+                                    if (tags.isJsonObject() && !tags.isJsonNull()) {
                                         JsonObject tag = tagElement.getAsJsonObject();
                                         checkForSuspicious(tag, node, basicOutputCollector);
                                     }
                                 }
                             } else {
-                                if (jsonTag.isJsonObject()) {
+                                if (jsonTag.isJsonObject() && !jsonTag.isJsonNull() && !node.isJsonNull()) {
                                     checkForSuspicious(jsonTag.getAsJsonObject(), node, basicOutputCollector);
                                 }
                             }
@@ -56,7 +56,7 @@ public class SuspiciousBolt implements IBasicBolt {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong!");
+            System.out.println("SuspiciousBolt: Something went wrong!");
             System.out.println(e);
         }
     }
@@ -76,15 +76,22 @@ public class SuspiciousBolt implements IBasicBolt {
         if (tag.has("@k") && tag.has("@v")) {
             JsonPrimitive key = tag.getAsJsonPrimitive("@k");
             JsonPrimitive value = tag.getAsJsonPrimitive("@v");
-            if (key.getAsString().length() <= 2 || key.getAsString().toLowerCase().equals("name") || key.getAsString().toLowerCase().equals("ref")) {
-                basicOutputCollector.emit(new Values(node.getAsString()));
-                suspiciousCounter++;
-            }
-            if (value.getAsString().length() == 1 && !(StringUtils.containsAny(value.getAsString(), "0123456789NSEWF"))) {
-                basicOutputCollector.emit(new Values(node.getAsString()));
-                suspiciousCounter++;
+            if (!key.isJsonNull() && !value.isJsonNull() && !node.isJsonNull()) {
+
+                String keyString = key.toString();
+                String valueString = value.toString();
+                String nodeString = node.toString();
+                if (keyString.length() <= 2 || keyString.toLowerCase().equals("name") || keyString.toLowerCase().equals("ref")) {
+                    basicOutputCollector.emit(new Values(nodeString));
+                    suspiciousCounter++;
+                }
+                if (valueString.length() == 1 && !(StringUtils.containsAny(valueString, "0123456789NSEWF"))) {
+                    basicOutputCollector.emit(new Values(nodeString));
+                    suspiciousCounter++;
+                }
             }
         }
+
     }
 
     @Override

@@ -42,7 +42,7 @@ public class UserCountBolt implements IBasicBolt {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong!");
+            System.out.println("UserCountBolt: Something went wrong!");
             System.out.println(e);
         }
 
