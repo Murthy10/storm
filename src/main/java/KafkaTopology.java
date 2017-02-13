@@ -34,7 +34,10 @@ public class KafkaTopology {
         kafkaConf.scheme = new SchemeAsMultiScheme(new StringScheme());
         kafkaConf.fetchSizeBytes = 100000000;
 
-        KafkaSpout kafkaSpout = new KafkaSpout(kafkaConf);
+
+
+        KafkaSpout kafkaSpout;
+        kafkaSpout = new KafkaSpout(kafkaConf);
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("kafkaSpout", kafkaSpout, 1);
 
