@@ -1,4 +1,22 @@
 %!TEX root = ../dissertation.tex
 \chapter{Installation}
+\newpage
+
+\section{Repositories}
+For the implementation part I used different Github repositories to store the code.
+And help guide the user how to deploy and install the applications.
+
+\subsection{OSMstream}
+The \fnurl{OSMstream}{http://storm.apache.org/releases/2.0.0-SNAPSHOT/Setting-up-a-Storm-cluster.html}   repository provides a docker container which collects the augmented diffs from OpenStreetMap.
+The diffs are provided in XML format and can be accessed over the overpass API.
+
+\subsection{storm}
+\fnurl{storm}{https://github.com/Murthy10/storm} is the main repository and hosts the Apache Storm implementation code with all the queries and a docker container for a simple usage.
+
+\subsection{StormBoard}
+The \fnurl{storm}{https://github.com/Murthy10/StormBoard} is a simple live streaming web dasboard to visualise the queries.
+It is based on a NodeJs server, Socket.io for realtime data exchange and Angular 2.0 on the client side.
+
 \section{Apache Storm}
-To set up a Apache Storm Cluster I recommend you to use the official and up to date \fnurl{documentation}{http://storm.apache.org/releases/2.0.0-SNAPSHOT/Setting-up-a-Storm-cluster.html}.
+To set up a Apache Storm Cluster I recommend you to use the official and up to date
+\fnurl{documentation}{http://storm.apache.org/releases/2.0.0-SNAPSHOT/Setting-up-a-Storm-cluster.html}.
