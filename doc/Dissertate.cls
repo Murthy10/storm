@@ -49,6 +49,9 @@
 \RequirePackage{color}
 \RequirePackage{xcolor}
 \usepackage{hyperref}
+\newcommand\fnurl[2]{%
+\href{#2}{#1}\footnote{\url{#2}}%
+}
 \RequirePackage{url}
 \RequirePackage{amssymb}
 %\AtBeginEnvironment{tabular}{\addfontfeature{RawFeature=+tnum}}
@@ -75,7 +78,7 @@
 % Front matter.
 \setcounter{tocdepth}{1}
 \usepackage[titles]{tocloft}
-\usepackage[titletoc]{appendix}
+\usepackage[titletoc,title]{appendix}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\cftchapfont}{\normalsize \scshape}
 \renewcommand\listfigurename{Listing of figures}
