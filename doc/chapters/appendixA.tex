@@ -4,19 +4,42 @@
 
 \section{Repositories}
 For the implementation part I used different Github repositories to store the code.
-And help guide the user how to deploy and install the applications.
+And help the user with the deployment and installation of the applications.
 
 \subsection{OSMstream}
-The \fnurl{OSMstream}{http://storm.apache.org/releases/2.0.0-SNAPSHOT/Setting-up-a-Storm-cluster.html}   repository provides a docker container which collects the augmented diffs from OpenStreetMap.
-The diffs are provided in XML format and can be accessed over the overpass API.
-
+The \fnurl{OSMstream}{https://github.com/geometalab/OSMstream} repository provides a docker container which collects the augmented diffs from OpenStreetMap.
+For further use we convert the diffs from XML to JSON format and publish them with Apache Kafka. \\
+\medskip
+Requirements:
+\begin{itemize}
+    \item Scala 2.11
+    \item Apache Kafka 0.10.0.1
+    \item Python3
+    \item Pip3
+    \item or Docker \textgreater= 1.10
+\end{itemize}
+\newpage
 \subsection{storm}
 \fnurl{storm}{https://github.com/Murthy10/storm} is the main repository and hosts the Apache Storm implementation code with all the queries and a docker container for a simple usage.
+This application uses the data provided by OSMstream.\\
+\medskip
+Requirements:
+\begin{itemize}
+    \item OSMstream
+    \item Apache Storm 1.0.2
+    \item JVM \textgreater= 1.8
+    \item Maven \textgreater= 3.3.3
+    \item or Docker \textgreater= 1.10
+\end{itemize}
+
 
 \subsection{StormBoard}
 The \fnurl{storm}{https://github.com/Murthy10/StormBoard} is a simple live streaming web dasboard to visualise the queries.
-It is based on a NodeJs server, Socket.io for realtime data exchange and Angular 2.0 on the client side.
-
-\section{Apache Storm}
-To set up a Apache Storm Cluster I recommend you to use the official and up to date
-\fnurl{documentation}{http://storm.apache.org/releases/2.0.0-SNAPSHOT/Setting-up-a-Storm-cluster.html}.
+It is based on a Node.js server, Socket.io for realtime data exchange and Angular 2.0 on the client side.\\
+\medskip
+Requirements:
+\begin{itemize}
+    \item Node.js >= 6.0.0
+    \item AngularJS 2.0
+    \item or Docker \textgreater= 1.10
+\end{itemize}

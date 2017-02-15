@@ -107,21 +107,29 @@ Normally a bolt implements the \textit{IRichBolt} interface, which has the follo
 \caption[Bolt engine]{Bolt engine}
 \end{figure}
 
+\subsubsection{Methods}
+A Bolt provides the following basic methods.
+\begin{enumerate}
+    \item void prepare(Map map, TopologyContext topologyContext)
+    \item void execute(Tuple tuple, BasicOutputCollector basicOutputCollector)
+    \item void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)
+    \item void cleanup()
+\end{enumerate}
 
-\subsubsection{public void prepare(Map map, TopologyContext topologyContext)}
-This method is always called befor the bolts starts to process tuples\\ (before execute(...)).
+\subsubsection{prepare}
+This method is always called befor the bolts starts to process tuples\\ (before the execute method)).
 A possible task could be to reset a counter.
 
 
-\subsubsection{public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector)}
+\subsubsection{execute}
 The execute methode processes a singel tuple of input, so it is the core function of every bold.
 So all the logic should be done here, for example filter a stream or counting the words of the input.
 
-\subsubsection{public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)}
+\subsubsection{declareOutputFields}
 The prepare method is responsible for defining the output schema of the bolt.
 If bolts are concatenated the output is a tuple ,but if the current bolt is may be the last bolt in the chain,
 and does a task like, print to the standard output, you don't have to set an output type.
 
-\subsubsection{public void cleanup()}
+\subsubsection{cleanup}
 Cleanup() is called when a bolt is going to shutdown. So you should do some tasks like a destructor does.
 For example disconnect an active database connection.
