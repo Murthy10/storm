@@ -1,12 +1,12 @@
-#storm
+# storm
 
-##Docker
+## Docker
 ```
 docker build -t osmstorm .
 docker run -d --name osmstorm -v .:/maped/ -p 2181:2181 -p 8080:8080 osmstorm
 ```
 
-##Usage
+## Usage
 Build project:
 
 ```
